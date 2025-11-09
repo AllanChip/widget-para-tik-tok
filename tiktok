@@ -1,33 +1,24 @@
-<!-- 
-    WIDGET POP-UP FLUTUANTE PARA BLOGGER - VERSÃO NEON (COMPACTA)
-    
-    CORREÇÃO: Substituição do '&' por '&amp;' na URL da fonte dentro do CSS injetado 
-    para evitar o erro de análise XML do Blogger ("The reference to entity "display"...").
--->
-
-<b:if cond='data:blog.pageType == &quot;index&quot;'>
-
 <script>
 // Função de inicialização para injetar o widget na página
 (function() {
     // 1. Definições de Conteúdo e Estilo (Variáveis)
-    const logoUrl = &#39;https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9xdYKkxoIS3zEn7OsvlBIA5Ywhk1WHRCTx1MQ6dE_bTxEGo0PRCgITCdAa5pF7Ih0T_5cLQduiQ7cSeqyJ-31cspb3xsfYnk739bGQdhc7vf5rURkBTi6qFn2YtK_pXR1TghvHCY_CfN-vFH73jf8Iin9EXbobz-xw66rIMfBjuvHgmkyeo8pYK0KHaQe/w640-h640/nova%20logo%20circular.png&#39;;
-    const qrCodeUrl = &#39;https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiav93qCp22suAuFm4UMXLyAaSNMK7ep1dJzC1lPYgyikoBtlufQ50aMQVAwZhCGb50fRJ4xjy47L-V4WvV-mHeUYWg6mUCbxaz3qa_s0X8Z7IzXenRawASCbGaLaTKaK-_V5IGFRxf6x3rgAW9JIrrL9D0XQgwHkiElPUeNzcgVpCSwwe2ecL2QommffIS/s320-rw/QRCODE%20DO%20CANAL%20DE%20OFERTAS.png&#39;;
-    const whatsappLink = &#39;https://www.whatsapp.com/channel/0029Vb620vHFcow2a90IDY0R&#39;;
-    const soundUrl = &#39;https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3&#39;;
+    const logoUrl = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9xdYKkxoIS3zEn7OsvlBIA5Ywhk1WHRCTx1MQ6dE_bTxEGo0PRCgITCdAa5pF7Ih0T_5cLQduiQ7cSeqyJ-31cspb3xsfYnk739bGQdhc7vf5rURkBTi6qFn2YtK_pXR1TghvHCY_CfN-vFH73jf8Iin9EXbobz-xw66rIMfBjuvHgmkyeo8pYK0KHaQe/w640-h640/nova%20logo%20circular.png';
+    const qrCodeUrl = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiav93qCp22suAuFm4UMXLyAaSNMK7ep1dJzC1lPYgyikoBtlufQ50aMQVAwZhCGb50fRJ4xjy47L-V4WvV-mHeUYWg6mUCbxaz3qa_s0X8Z7IzXenRawASCbGaLaTKaK-_V5IGFRxf6x3rgAW9JIrrL9D0XQgwHkiElPUeNzcgVpCSwwe2ecL2QommffIS/s320-rw/QRCODE%20DO%20CANAL%20DE%20OFERTAS.png';
+    const whatsappLink = 'https://www.whatsapp.com/channel/0029Vb620vHFcow2a90IDY0R';
+    const soundUrl = 'https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3';
 
     // 2. Injeção de Dependências (Tailwind e Fontes)
     
     // Injeta o script do Tailwind
-    const tailwindScript = document.createElement(&#39;script&#39;);
-    tailwindScript.src = &#39;https://cdn.tailwindcss.com&#39;;
+    const tailwindScript = document.createElement('script');
+    tailwindScript.src = 'https://cdn.tailwindcss.com';
     document.head.appendChild(tailwindScript);
 
     // Injeta os estilos CSS personalizados
-    const styleElement = document.createElement(&#39;style&#39;);
+    const styleElement = document.createElement('style');
     styleElement.textContent = `
-        /* CORREÇÃO: Substituído  por &amp; na URL da fonte para evitar erro XML */
-        @import url(&#39;https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;display=swap&#39;);
+        /* CORREÇÃO: Substituído & por &amp; na URL da fonte para evitar erro XML */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;display=swap');
         
         @keyframes fadeIn {
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
@@ -52,7 +43,7 @@
         /* Z-index alto e fonte para o container principal */
         #widget-livre-estilo {
             z-index: 9999;
-            font-family: &#39;Inter&#39;, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-image: linear-gradient(135deg, #0f172a, #1e293b);
         }
         
@@ -66,15 +57,12 @@
 
     // 3. Estrutura HTML do Widget
     const htmlContent = `
-        <!-- Adicionando a classe neon-effect e mantendo as classes de design e tamanho compactas -->
         <div class='neon-effect fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-xs p-5 mx-auto rounded-3xl border-4 border-emerald-500 hidden' id='widget-livre-estilo'>
 
-            <!-- Logo no topo -->
             <div class='text-center mb-3'>
                 <img alt='Logo Livre Estilo 3D' class='h-14 mx-auto filter drop-shadow-lg' src='${logoUrl}'/>
             </div>
 
-            <!-- Título Chamativo -->
             <header class='text-center mb-5'>
                 <h1 class='text-2xl sm:text-3xl font-extrabold text-white leading-tight'>
                     <span class='text-yellow-400'>🚨</span> LIVRE ESTILO OFERTAS! <span class='text-emerald-400'>🚀</span>
@@ -82,16 +70,13 @@
                 <p class='text-sm sm:text-base text-gray-300 mt-1'>Seu Canal Exclusivo no WhatsApp Chegou!</p>
             </header>
 
-            <!-- Área do QR Code -->
             <div class='bg-white p-4 rounded-xl text-center shadow-inner mb-5'>
                 <div class='w-full h-auto flex items-center justify-center border-3 border-dashed border-gray-300 p-1'>
-                    <!-- Imagem do QR Code com tamanho limitado -->
                     <img alt='QR Code do Canal de Ofertas' class='qr-code-img h-auto' src='${qrCodeUrl}'/> 
                 </div>
                 <p class='mt-2 text-sm text-gray-700 font-bold'>Aponte a câmera e entre agora!</p>
             </div>
 
-            <!-- Descrição e Link de Acesso -->
             <div class='text-center p-3 bg-emerald-600/20 rounded-xl border border-emerald-500/50'>
                 <p class='text-sm font-semibold text-emerald-300 mb-3'>
                     Não consegue escanear? Clique abaixo!
@@ -114,24 +99,24 @@
     `;
 
     // Injeta o HTML no corpo do documento
-    document.body.insertAdjacentHTML(&#39;beforeend&#39;, htmlContent);
+    document.body.insertAdjacentHTML('beforeend', htmlContent);
 
     
     // 4. Lógica de Exibição e Fechamento
-    const widget = document.getElementById(&quot;widget-livre-estilo&quot;);
+    const widget = document.getElementById("widget-livre-estilo");
     const notificationSound = new Audio(soundUrl);
 
-    // Adiciona a classe de animação e remove &#39;hidden&#39;
+    // Adiciona a classe de animação e remove 'hidden'
     function showWidget() {
         if (!widget) return; 
         
-        widget.classList.remove(&quot;hidden&quot;);
+        widget.classList.remove("hidden");
         // Adiciona a animação de fade-in
-        widget.classList.add(&quot;animate-fadeIn&quot;);
+        widget.classList.add("animate-fadeIn");
         
         // Tenta tocar o som (com tratamento para bloqueio de autoplay)
         notificationSound.currentTime = 0;
-        notificationSound.play().catch(() =&gt; {});
+        notificationSound.play().catch(() => {});
     }
 
     // Dispara a exibição inicial e a repetição
@@ -139,22 +124,20 @@
     setInterval(showWidget, 180000); // Repete a cada 3 minutos (180000 ms)
 
     // Lógica para fechar o pop-up ao clicar fora
-    document.addEventListener(&quot;click&quot;, (e) =&gt; {
+    document.addEventListener("click", (e) => {
         if (!widget) return; 
         // Verifica se o clique não foi no próprio widget
         if (!widget.contains(e.target)) {
-            widget.classList.remove(&quot;animate-fadeIn&quot;); 
-            widget.classList.add(&quot;hidden&quot;);
+            widget.classList.remove("animate-fadeIn"); 
+            widget.classList.add("hidden");
         }
     });
     
     // Evita que o pop-up feche se o usuário estiver clicando dentro dele.
     if (widget) {
-        widget.addEventListener(&quot;click&quot;, (e) =&gt; {
+        widget.addEventListener("click", (e) => {
             e.stopPropagation(); 
         });
     }
 })();
 </script>
-
-</b:if>
