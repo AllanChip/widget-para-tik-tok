@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Promocional OBS</title>
+
+    <!-- 1. CARREGAMENTO ESTÁTICO DO TAILWIND CSS (Necessita de internet) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. ESTILOS CSS ESSENCIAIS, ANIMAÇÕES E POSICIONAMENTO PARA O SLIDE -->
+    <style>
+        /* Define o fundo como transparente, CRÍTICO para o OBS */
+        body { 
+            margin: 0; 
+            background-color: transparent !important; 
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* Garante que não haja scrollbar horizontal ao esconder */
+        }
+
+        /* Configurações de Fonte */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        
+        /* Animação de Pulso Neon */
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 5px #10b981, 0 0 10px #10b981; }
+            50% { box-shadow: 0 0 10px #059669, 0 0 20px #059669; }
+            100% { box-shadow: 0 0 5px #10b981, 0 0 10px #10b981; }
+        }
+
+        .neon-effect {
+            animation: neonPulse 1.5s ease-in-out infinite;
+        }
+        
+        /* Estilos do Container Principal e Lógica de SLIDE */
+        #widget-livre-estilo {
+            font-family: 'Inter', sans-serif;
+            background-image: linear-gradient(135deg, #0f172a, #1e293b);
+            
+            /* Posição Fixa no Centro da Tela */
+            position: fixed;
+            left: 50%; 
+            top: 50%;
+            
+            /* Configuração de transição suave para o movimento */
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); 
+            
+            /* Posição inicial (ESCONDIDO): 
+               - Move 100% do centro (left: 50%) para fora da tela
+               - Mantém centralizado verticalmente (-50%)
+            */
+            transform: translate(100%, -50%); 
+        }
+
+        /* A classe que faz o widget deslizar para o centro da tela (VISÍVEL) */
+        .is-visible {
+            /* Posição final: Centralizado horizontal e verticalmente */
+            transform: translate(-50%, -50%) !important; 
+        }
+        
+        .qr-code-img {
+            max-width: 130px; 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3. ESTRUTURA HTML DO WIDGET INSERIDA DIRETAMENTE NO CORPO -->
+    <div 
+        class='neon-effect w-11/12 max-w-xs p-5 mx-auto rounded-3xl border-4 border-emerald-500' 
+        id='widget-livre-estilo'
+    >
+        <!-- Logo no topo -->
+        <div class='text-center mb-3'>
+            <!-- URL da logo será injetada pelo script -->
+            <img alt='Logo Livre Estilo 3D' class='h-14 mx-auto filter drop-shadow-lg' id='logo-img' src=''/>
+        </div>
+
+        <!-- Título Chamativo -->
+        <header class='text-center mb-5'>
+            <h1 class='text-2xl sm:text-3xl font-extrabold text-white leading-tight'>
+                <span class='text-yellow-400'>💸</span> LIVRE ESTILO OFERTAS! <span class='text-emerald-400'>🚀</span>
+            </h1>
+            <p class='text-sm sm:text-base text-gray-300 mt-1'>Seu Canal Exclusivo no WhatsApp Chegou!</p>
+        </header>
+
+        <!-- Área do QR Code -->
+        <div class='bg-white p-4 rounded-xl text-center shadow-inner mb-5'>
+            <div class='w-full h-auto flex items-center justify-center border-3 border-dashed border-gray-300 p-1'>
+                <!-- URL do QR Code será injetada pelo script -->
+                <img alt='QR Code do Canal de Ofertas' class='qr-code-img h-auto' id='qrcode-img' src=''/> 
+            </div>
+            <p class='mt-2 text-sm text-gray-700 font-bold'>Aponte a câmera e entre agora!</p>
+        </div>
+
+        <!-- Descrição e Link de Acesso -->
+        <div class='text-center p-3 bg-emerald-600/20 rounded-xl border border-emerald-500/50'>
+            <p class='text-sm font-semibold text-emerald-300 mb-3'>
+                Não consegue escanear? Clique abaixo!
+            </p>
+
+            <!-- Link será injetado pelo script -->
+            <a class='block w-full py-2 px-4 bg-emerald-500 text-white font-bold text-base rounded-full shadow-lg hover:bg-emerald-400 transition duration-150 transform hover:scale-105' id='whatsapp-link' href='#' target='_blank'>
+                🌐 ACESSE O CANAL AGORA! 🔗LINK NA BIO🔗
+            </a>
+
+            <p class='text-xs text-gray-400 mt-3'>
+                Descontos imperdíveis, cupons e novidades primeiro para você.
+            </p>
+            <div class='mt-2 text-xl'>
+                <span class='hover:animate-pulse'>💰</span>
+                <span class='hover:animate-pulse'>🎁</span>
+                <span class='hover:animate-pulse'>📱</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 4. LÓGICA JAVASCRIPT -->
+    <script>
+        let audioUnlocked = false; // Variável de controle para o estado do áudio
+        
+        // CONSTANTES PARA O LOOP DE SLIDE
+        const SHOW_DURATION = 5000; // Tempo em milissegundos que o widget ficará visível (5 segundos)
+        const CYCLE_INTERVAL = 15000; // Tempo total do ciclo (15 segundos)
+
+
+        window.onload = function() {
+            // 1. Definições de Conteúdo e Variáveis
+            const logoUrl = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9xdYKkxoIS3zEn7OsvlBIA5Ywhk1WHRCTx1MQ6dE_bTxEGo0PRCgITCdAa5pF7Ih0T_5cLQduiQ7cSeqyJ-31cspb3xsfYnk739bGQdhc7vf5rURkBTi6qFn2YtK_pXR1TghvHCY_CfN-vFH73jf8Iin9EXbobz-xw66rIMfBjuvHgmkyeo8pYK0KHaQe/w640-h640/nova%20logo%20circular.png';
+            const qrCodeUrl = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiav93qCp22suAuFm4UMXLyAaSNMK7ep1dJzC1lPYgyikoBtlufQ50aMQVAwZhCGb50fRJ4xjy47L-V4WvV-mHeUYWg6mUCbxaz3qa_s0X8Z7IzXenRawASCbGaLaTKaK-_V5IGFRxf6x3rgAW9JIrrL9D0XQgwHkiElPUeNzcgVpCSwwe2ecL2QommffIS/s320-rw/QRCODE%20DO%20CANAL%20DE%20OFERTAS.png';
+            const whatsappLink = 'https://www.whatsapp.com/channel/0029Vb620vHFcow2a90IDY0R';
+            const soundUrl = 'https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3';
+
+            // 2. Referências aos Elementos DOM
+            const widget = document.getElementById('widget-livre-estilo');
+            const logoImg = document.getElementById('logo-img');
+            const qrcodeImg = document.getElementById('qrcode-img');
+            const whatsappAnchor = document.getElementById('whatsapp-link');
+            const notificationSound = new Audio(soundUrl);
+
+            // 3. Injeta as URLs dinâmicas nos elementos (melhor para OBS)
+            if (logoImg) logoImg.src = logoUrl;
+            if (qrcodeImg) qrcodeImg.src = qrCodeUrl;
+            if (whatsappAnchor) whatsappAnchor.href = whatsappLink;
+
+            // FUNÇÃO PARA ESCONDER (SLIDE OUT)
+            function hideWidget() {
+                if (!widget) return;
+                // Remove a classe, fazendo o widget deslizar de volta para a posição inicial (fora da tela)
+                widget.classList.remove('is-visible');
+            }
+
+            // FUNÇÃO PARA MOSTRAR (SLIDE IN)
+            function showWidget() {
+                if (!widget) return; 
+                
+                // Adiciona a classe para mover o widget para o centro
+                widget.classList.add('is-visible');
+                
+                // Toca o som SOMENTE se o contexto de áudio estiver desbloqueado.
+                if (audioUnlocked) {
+                    notificationSound.currentTime = 0;
+                    notificationSound.play().catch((e) => {
+                         console.error("ERRO CRÍTICO: Falha ao tocar o áudio após o desbloqueio.");
+                    });
+                } else {
+                    // Tenta tocar e, se falhar (o que é esperado), loga a instrução de clique.
+                    notificationSound.currentTime = 0;
+                    notificationSound.play().catch(() => {
+                        console.log("INSTRUÇÃO: Clique UMA VEZ na área do widget no OBS (ou no HTML) para desbloquear o som.");
+                    });
+                }
+            }
+
+            // FUNÇÃO PRINCIPAL QUE GERENCIA O LOOP (MOSTRAR E ESCONDER)
+            function startLoop() {
+                showWidget();
+                // Agenda para esconder o widget após a duração de exibição
+                setTimeout(hideWidget, SHOW_DURATION);
+            }
+
+
+            // FUNÇÃO PARA DESBLOQUEAR O ÁUDIO (Mantida para resolver o erro)
+            const unlockAudio = () => {
+                if (audioUnlocked) return;
+                
+                // Tenta tocar o som com volume zero para iniciar o AudioContext
+                notificationSound.volume = 0;
+                notificationSound.play()
+                    .then(() => {
+                        audioUnlocked = true;
+                        notificationSound.volume = 1; // Restaura o volume
+                        console.log("SUCESSO: Áudio desbloqueado para reprodução automática.");
+                    })
+                    .catch((e) => {
+                        console.warn("AVISO: O clique não foi suficiente para desbloquear o áudio.");
+                    });
+
+                // Remove o listener após a primeira tentativa de clique
+                document.removeEventListener('click', unlockAudio);
+            };
+
+            // Adiciona o listener para o primeiro clique na Fonte do Navegador
+            document.addEventListener('click', unlockAudio);
+            
+            
+            // 4. Lógica de Disparo do Loop
+            
+            // Dispara o primeiro ciclo após um pequeno delay inicial
+            setTimeout(startLoop, 1500); 
+            
+            // Repete o ciclo (mostrar por 5s, esconder por 10s) a cada 15 segundos
+            setInterval(startLoop, CYCLE_INTERVAL);
+
+            // 5. Lógica para Fechar (Ao clicar fora ou no widget)
+            // Se o usuário clicar fora, o widget deve deslizar para fora.
+            document.addEventListener("click", (e) => {
+                if (!widget) return; 
+                if (widget.contains(e.target)) {
+                    e.stopPropagation(); // Se o clique for dentro, não fecha
+                    return;
+                }
+                
+                // Se o clique for fora, esconde imediatamente
+                hideWidget(); 
+            });
+            
+            // Garante que o clique no próprio widget não esconde ele imediatamente
+            if (widget) {
+                widget.addEventListener("click", (e) => {
+                    e.stopPropagation(); 
+                });
+            }
+        };
+    </script>
+</body>
+</html>
